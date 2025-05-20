@@ -20,7 +20,7 @@ std::vector<Iris> parseFile(std::string const& fileName, int const& k, int const
 
     std::random_device random_device;
     std::mt19937 generator(random_device());
-    std::uniform_int_distribution<> distribution(1, k);
+    std::uniform_int_distribution<> distribution(1, k + 1);
 
     while (std::getline(file, line))
     {
@@ -106,6 +106,22 @@ void compute(std::vector<Iris> & irisList, int const& k, int const& ATTRIBUTES_L
                 changed = true;
             }
         }
+
+        for (int x = 0; x < centroids.size(); x++)
+        {
+            float distance(0.f);
+
+            for (Iris const& iris : irisList)
+            {
+                for (int i = 0; i < ATTRIBUTES_LENGTH; i++)
+                {
+                    if (iris.getGroupNumber() == x + 1)
+                    {distance += utils::euclideanDistance(centroids.at(x).at(i), iris.getAttributeAt(i));}
+                }
+            }
+            std::cout << "Group: " << x + 1 << ", distance: " << distance << "; ";
+        }
+        std::cout << std::endl;
     }
 }
 
@@ -131,12 +147,12 @@ auto main(int const argc, char const* argv[]) -> int
 
     compute(irisList, k, ATTRIBUTES_LENGTH);
 
-    for (int i = 1; i < k + 1; i++)
-    {
-        for (Iris const& iris : irisList)
-        {
-            if (iris.getGroupNumber() == i)
-            {utils::printIris(iris);}
-        }
-    }
+    // for (int i = 1; i < k + 1; i++)
+    // {
+    //     for (Iris const& iris : irisList)
+    //     {
+    //         if (iris.getGroupNumber() == i)
+    //         {utils::printIris(iris);}
+    //     }
+    // }
 }
